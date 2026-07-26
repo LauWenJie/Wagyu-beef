@@ -2,108 +2,162 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For Khyra ❤️</title>
+<title>MedFit Dashboard</title>
 
 <style>
 body {
-  margin: 0;
-  height: 100vh;
-  overflow: hidden;
-  background: linear-gradient(#ffd6e7, #fff);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: Arial, sans-serif;
+  margin:0;
+  font-family:Arial;
+  background:#121212;
+  color:white;
 }
 
 .container {
-  text-align: center;
+  padding:20px;
+}
+
+.card {
+  background:#1f1f1f;
+  border-radius:15px;
+  padding:20px;
+  margin-bottom:15px;
 }
 
 h1 {
-  color: #ff4d88;
-  font-size: 40px;
-  animation: pulse 1.5s infinite;
+  text-align:center;
+  color:#4dd0e1;
 }
 
-.cat {
-  font-size: 120px;
-  animation: move 3s infinite;
+input, button {
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  margin:5px;
 }
 
-.kiss {
-  font-size: 60px;
-  animation: kiss 2s infinite;
+input {
+  width:70%;
 }
 
-p {
-  font-size: 22px;
-  color: #555;
+button {
+  background:#4dd0e1;
+  cursor:pointer;
 }
 
-.heart {
-  position: absolute;
-  font-size: 30px;
-  animation: float 5s linear infinite;
+.item {
+  margin:10px 0;
 }
 
-@keyframes pulse {
-  50% { transform: scale(1.15); }
-}
-
-@keyframes move {
-  50% { transform: translateY(-20px); }
-}
-
-@keyframes kiss {
-  50% { transform: scale(1.4); }
-}
-
-@keyframes float {
-  from {
-    bottom: -50px;
-    opacity: 1;
-  }
-  to {
-    bottom: 100vh;
-    opacity: 0;
-  }
+.progress {
+  font-size:30px;
+  color:#81c784;
 }
 </style>
+
 </head>
 
 <body>
 
 <div class="container">
 
-<h1>For Khyra ❤️</h1>
+<h1>🩺 MedFit Dashboard</h1>
 
-<div class="cat">🐱</div>
 
-<div class="kiss">💋</div>
+<div class="card">
+<h2>🏋️ Workout Log</h2>
 
-<p>
-For my favourite person, Khyra ❤️<br>
-A little kiss just for you 🐱💋
+<input id="workout" placeholder="Example: Bench 80kg x5">
+<button onclick="addWorkout()">Add</button>
+
+<div id="workouts"></div>
+</div>
+
+
+
+<div class="card">
+<h2>🍗 Protein Tracker</h2>
+
+<input id="protein" placeholder="Protein (g)">
+<button onclick="addProtein()">Add</button>
+
+<p class="progress">
+<span id="totalProtein">0</span> / 150g
 </p>
 
 </div>
 
+
+
+<div class="card">
+<h2>⚖️ Weight</h2>
+
+<input id="weight" placeholder="Weight kg">
+<button onclick="saveWeight()">Save</button>
+
+<p id="weightDisplay"></p>
+</div>
+
+
+
+<div class="card">
+<h2>✅ Today's Checklist</h2>
+
+<div class="item">
+<input type="checkbox"> Review lectures
+</div>
+
+<div class="item">
+<input type="checkbox"> Gym
+</div>
+
+<div class="item">
+<input type="checkbox"> Read medicine notes
+</div>
+
+</div>
+
+
+</div>
+
+
 <script>
-setInterval(() => {
- let heart = document.createElement("div");
- heart.className="heart";
- heart.innerHTML="❤️";
- heart.style.left=Math.random()*100+"vw";
- heart.style.animationDuration=(3+Math.random()*3)+"s";
- document.body.appendChild(heart);
 
- setTimeout(()=>{
-  heart.remove();
- },5000);
+let protein=0;
 
-},500);
+function addWorkout(){
+let text=document.getElementById("workout").value;
+
+let p=document.createElement("p");
+p.innerHTML="💪 "+text;
+
+document.getElementById("workouts").appendChild(p);
+
+document.getElementById("workout").value="";
+}
+
+
+function addProtein(){
+
+let amount=parseInt(document.getElementById("protein").value);
+
+protein+=amount;
+
+document.getElementById("totalProtein").innerHTML=protein;
+
+}
+
+
+function saveWeight(){
+
+let w=document.getElementById("weight").value;
+
+document.getElementById("weightDisplay").innerHTML=
+"Current weight: "+w+" kg";
+
+}
+
 </script>
+
 
 </body>
 </html>
