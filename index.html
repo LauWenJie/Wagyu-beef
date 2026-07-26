@@ -5,56 +5,55 @@
 <title>MedFit Dashboard</title>
 
 <style>
-body {
-  margin:0;
-  font-family:Arial;
-  background:#121212;
-  color:white;
+body{
+margin:0;
+font-family:Arial;
+background:#101010;
+color:white;
 }
 
-.container {
-  padding:20px;
+.container{
+padding:20px;
 }
 
-.card {
-  background:#1f1f1f;
-  border-radius:15px;
-  padding:20px;
-  margin-bottom:15px;
+h1{
+text-align:center;
+color:#4dd0e1;
 }
 
-h1 {
-  text-align:center;
-  color:#4dd0e1;
+.card{
+background:#1e1e1e;
+padding:20px;
+border-radius:15px;
+margin-bottom:15px;
 }
 
-input, button {
-  padding:10px;
-  border-radius:8px;
-  border:none;
-  margin:5px;
+input,button,select{
+padding:10px;
+border-radius:8px;
+border:none;
+margin:4px;
 }
 
-input {
-  width:70%;
+button{
+background:#4dd0e1;
 }
 
-button {
-  background:#4dd0e1;
-  cursor:pointer;
+.stat{
+font-size:20px;
+margin:8px;
 }
 
-.item {
-  margin:10px 0;
+.item{
+background:#292929;
+padding:10px;
+margin:5px;
+border-radius:8px;
 }
 
-.progress {
-  font-size:30px;
-  color:#81c784;
-}
 </style>
-
 </head>
+
 
 <body>
 
@@ -64,57 +63,103 @@ button {
 
 
 <div class="card">
-<h2>🏋️ Workout Log</h2>
 
-<input id="workout" placeholder="Example: Bench 80kg x5">
-<button onclick="addWorkout()">Add</button>
+<h2>🔥 Today's Nutrition</h2>
 
-<div id="workouts"></div>
+<div class="stat">
+Calories: <span id="calories">0</span> kcal
+</div>
+
+<div class="stat">
+🍗 Protein: <span id="protein">0</span> g
+</div>
+
+<div class="stat">
+🍚 Carbs: <span id="carbs">0</span> g
+</div>
+
+<div class="stat">
+🥑 Fat: <span id="fat">0</span> g
+</div>
+
 </div>
 
 
 
 <div class="card">
-<h2>🍗 Protein Tracker</h2>
 
-<input id="protein" placeholder="Protein (g)">
-<button onclick="addProtein()">Add</button>
+<h2>🍽 Add Food</h2>
 
-<p class="progress">
-<span id="totalProtein">0</span> / 150g
-</p>
+<input id="food" placeholder="Food">
+
+<input id="cal" placeholder="Calories">
+
+<input id="pro" placeholder="Protein">
+
+<input id="carb" placeholder="Carbs">
+
+<input id="fatInput" placeholder="Fat">
+
+<button onclick="addFood()">Add</button>
+
+<div id="foods"></div>
 
 </div>
 
 
 
 <div class="card">
-<h2>⚖️ Weight</h2>
+
+<h2>⚖️ Weight Tracker</h2>
 
 <input id="weight" placeholder="Weight kg">
+
 <button onclick="saveWeight()">Save</button>
 
 <p id="weightDisplay"></p>
+
 </div>
 
 
 
 <div class="card">
-<h2>✅ Today's Checklist</h2>
 
-<div class="item">
-<input type="checkbox"> Review lectures
-</div>
+<h2>🏋️ Workout Log</h2>
 
-<div class="item">
-<input type="checkbox"> Gym
-</div>
+<input id="workout" placeholder="Example: Squat 120kg x5">
 
-<div class="item">
-<input type="checkbox"> Read medicine notes
-</div>
+<button onclick="addWorkout()">Add</button>
+
+<div id="workouts"></div>
 
 </div>
+
+
+
+<div class="card">
+
+<h2>🧮 TDEE Calculator</h2>
+
+<input id="age" placeholder="Age">
+
+<input id="height" placeholder="Height cm">
+
+<input id="bodyweight" placeholder="Weight kg">
+
+
+<select id="activity">
+<option value="1.2">Low activity</option>
+<option value="1.55">Moderate</option>
+<option value="1.725">High activity</option>
+</select>
+
+
+<button onclick="calculateTDEE()">Calculate</button>
+
+<p id="tdee"></p>
+
+</div>
+
 
 
 </div>
@@ -122,39 +167,105 @@ button {
 
 <script>
 
-let protein=0;
+let data = JSON.parse(localStorage.getItem("medfit")) || {
+cal:0,
+protein:0,
+carbs:0,
+fat:0,
+foods:[],
+workouts:[]
+};
 
-function addWorkout(){
-let text=document.getElementById("workout").value;
 
-let p=document.createElement("p");
-p.innerHTML="💪 "+text;
-
-document.getElementById("workouts").appendChild(p);
-
-document.getElementById("workout").value="";
+function save(){
+localStorage.setItem("medfit",JSON.stringify(data));
 }
 
 
-function addProtein(){
+function update(){
 
-let amount=parseInt(document.getElementById("protein").value);
+calories.innerHTML=data.cal;
+protein.innerHTML=data.protein;
+carbs.innerHTML=data.carbs;
+fat.innerHTML=data.fat;
 
-protein+=amount;
+foods.innerHTML=data.foods.map(x=>"<div class='item'>🍽 "+x+"</div>").join("");
 
-document.getElementById("totalProtein").innerHTML=protein;
+workouts.innerHTML=data.workouts.map(x=>"<div class='item'>💪 "+x+"</div>").join("");
 
 }
+
+
+
+function addFood(){
+
+let name=food.value;
+
+data.cal+=Number(cal.value);
+data.protein+=Number(pro.value);
+data.carbs+=Number(carb.value);
+data.fat+=Number(fatInput.value);
+
+data.foods.push(
+name+" ("+cal.value+" kcal)"
+);
+
+save();
+update();
+
+}
+
 
 
 function saveWeight(){
 
-let w=document.getElementById("weight").value;
+localStorage.setItem(
+"weight",
+weight.value
+);
 
-document.getElementById("weightDisplay").innerHTML=
-"Current weight: "+w+" kg";
+weightDisplay.innerHTML=
+"Current weight: "+weight.value+" kg";
 
 }
+
+
+
+function addWorkout(){
+
+data.workouts.push(workout.value);
+
+save();
+update();
+
+}
+
+
+
+function calculateTDEE(){
+
+let a=Number(age.value);
+let h=Number(height.value);
+let w=Number(bodyweight.value);
+
+let bmr=
+10*w+
+6.25*h-
+5*a+
+5;
+
+let result=
+bmr*
+Number(activity.value);
+
+
+tdee.innerHTML=
+"Maintenance: "+Math.round(result)+" kcal/day";
+
+}
+
+
+update();
 
 </script>
 
